@@ -1,0 +1,12 @@
+# Demo variant: a "someone edited the prompt and made it worse" scenario.
+# Run the eval against this after v1 to see the pipeline catch a real regression.
+# (The category definitions here are vaguer and the few-shot examples were removed —
+# a realistic mistake someone makes while "simplifying" a prompt.)
+version: "v2-experimental"
+model: "llama-3.3-70b-versatile"
+temperature: 0.0
+max_tokens: 300
+system_prompt: |
+  Classify the customer email and respond with ONLY a JSON object:
+  {"category": "<billing|technical|account|general>", "summary": "<one sentence summary>"}
+few_shot_examples: []

@@ -1,0 +1,134 @@
+{
+  "dataset_version": "v1",
+  "notes": "16 seed cases. Per the build guide, expand this to 50-100 by hand over time, and add every real production failure you find as a new case with expected_difficulty noting why it's hard.",
+  "cases": [
+    {
+      "id": "billing_001",
+      "input": "Hello, I noticed I was billed $49 twice this month for the same subscription. Can you please refund the extra charge?",
+      "expected_category": "billing",
+      "expected_summary": "Customer reports a duplicate charge and requests a refund.",
+      "expected_difficulty": "easy",
+      "notes": "Clear, unambiguous billing complaint."
+    },
+    {
+      "id": "billing_002",
+      "input": "What's the difference between your Pro and Enterprise pricing plans? I'm trying to decide which one to upgrade to.",
+      "expected_category": "billing",
+      "expected_summary": "Customer is comparing pricing plans before upgrading.",
+      "expected_difficulty": "easy",
+      "notes": "Pricing question, no complaint involved."
+    },
+    {
+      "id": "technical_001",
+      "input": "The app keeps crashing every time I try to upload a photo. I've tried restarting my phone and it still happens.",
+      "expected_category": "technical",
+      "expected_summary": "App crashes on photo upload even after restarting the device.",
+      "expected_difficulty": "easy",
+      "notes": "Clear bug report."
+    },
+    {
+      "id": "technical_002",
+      "input": "I upgraded to the new plan but the analytics dashboard feature I paid for still shows 'locked'. Is this a bug?",
+      "expected_category": "technical",
+      "expected_summary": "Paid feature is still showing as locked after upgrading.",
+      "expected_difficulty": "medium",
+      "notes": "Could be miscategorized as billing since it mentions a paid upgrade; the actual issue is access/functionality."
+    },
+    {
+      "id": "account_001",
+      "input": "I reset my password twice but it still says invalid credentials when I try to log in.",
+      "expected_category": "account",
+      "expected_summary": "Customer can't log in even after resetting their password.",
+      "expected_difficulty": "easy",
+      "notes": "Standard account access issue."
+    },
+    {
+      "id": "account_002",
+      "input": "Can you update the email address on my account? I no longer have access to my old one.",
+      "expected_category": "account",
+      "expected_summary": "Customer wants to update their account email address.",
+      "expected_difficulty": "easy",
+      "notes": "Straightforward account settings request."
+    },
+    {
+      "id": "general_001",
+      "input": "Hey team, just wanted to say your support has been amazing. Keep it up!",
+      "expected_category": "general",
+      "expected_summary": "Customer is giving positive feedback about support.",
+      "expected_difficulty": "easy",
+      "notes": "Compliment with no actionable request."
+    },
+    {
+      "id": "general_002",
+      "input": "Do you guys have an office in Mumbai?",
+      "expected_category": "general",
+      "expected_summary": "Customer is asking whether the company has a Mumbai office.",
+      "expected_difficulty": "easy",
+      "notes": "Vague company-info question, not billing/technical/account."
+    },
+    {
+      "id": "edge_ambiguous_001",
+      "input": "My subscription payment failed last night and now I can't log into my account at all — is that related?",
+      "expected_category": "billing",
+      "expected_summary": "A failed subscription payment appears to have locked the customer out of their account.",
+      "expected_difficulty": "hard",
+      "notes": "Genuinely spans billing and account. Labeled billing because the failed payment is the root cause, but account is a defensible answer too — good case to watch for flip-flopping across prompt versions."
+    },
+    {
+      "id": "edge_short_001",
+      "input": "Refund??",
+      "expected_category": "billing",
+      "expected_summary": "Customer is asking about getting a refund.",
+      "expected_difficulty": "hard",
+      "notes": "Extremely short, no context. Tests whether the model over-infers or handles minimal input gracefully."
+    },
+    {
+      "id": "edge_typo_001",
+      "input": "hii cant acces my acount its been 2 dyas since i mailed no relpy plz help fastt",
+      "expected_category": "account",
+      "expected_summary": "Customer cannot access their account and has not received a reply in two days.",
+      "expected_difficulty": "medium",
+      "notes": "Heavy typos and no punctuation — tests robustness to messy real-world input."
+    },
+    {
+      "id": "edge_mixed_lang_001",
+      "input": "Mera invoice galat hai, extra amount charge hua hai is month, please check and refund kardo.",
+      "expected_category": "billing",
+      "expected_summary": "Customer says their invoice is incorrect with an extra charge and wants a refund.",
+      "expected_difficulty": "hard",
+      "notes": "Hindi-English code-mixed input. Common in real support inboxes for India-based businesses; tests whether the model handles it without misclassifying as 'general' due to unfamiliar phrasing."
+    },
+    {
+      "id": "edge_sarcastic_001",
+      "input": "Oh great, my account got suspended for 'no reason' right before my big presentation. Love the timing. Can someone actually look into this?",
+      "expected_category": "account",
+      "expected_summary": "Customer's account was suspended and they are frustrated, requesting it be reviewed.",
+      "expected_difficulty": "hard",
+      "notes": "Sarcasm could confuse a model into tagging as 'general' or missing the actionable request underneath the tone."
+    },
+    {
+      "id": "technical_003",
+      "input": "Every time I export a report to PDF, the file comes out completely blank. CSV export works fine though.",
+      "expected_category": "technical",
+      "expected_summary": "PDF export produces blank files while CSV export works correctly.",
+      "expected_difficulty": "medium",
+      "notes": "Specific, detailed bug report — good for testing summary quality, not just category."
+    },
+    {
+      "id": "account_003",
+      "input": "I want to permanently delete my account and all my data. Please confirm once it's done.",
+      "expected_category": "account",
+      "expected_summary": "Customer requests permanent deletion of their account and data.",
+      "expected_difficulty": "easy",
+      "notes": "High-stakes account request; miscategorizing this has real consequences in production."
+    },
+    {
+      "id": "edge_multi_topic_001",
+      "input": "Two things: first, I was overcharged $12 last month, and second, the mobile app won't let me change my notification settings. Can you help with both?",
+      "expected_category": "billing",
+      "expected_summary": "Customer reports an overcharge and a separate app settings bug in one message.",
+      "expected_difficulty": "hard",
+      "notes": "Contains two distinct issues (billing + technical) in one email. Labeled billing since it's mentioned first, but flag this as a case where single-label classification is a real limitation worth discussing in interviews."
+    }
+  ]
+}

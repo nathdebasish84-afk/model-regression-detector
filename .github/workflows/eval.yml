@@ -1,0 +1,63 @@
+name: LLM Regression Eval
+
+on:
+  pull_request:
+    paths:
+      - "prompts/**"
+      - "data/golden_dataset.json"
+  workflow_dispatch: {}
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Persists runs/ across workflow runs so the eval has a previous run
+      # to diff against, even though runs/*.json is gitignored.
+      - name: Restore run history
+        uses: actions/cache@v4
+        with:
+          path: runs
+          key: eval-runs-${{ github.ref_name }}
+          restore-keys: |
+            eval-runs-
+
+      - name: Run eval
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python main.py
+
+      - name: Upload HTML report as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: runs/latest_report.html
+
+      - name: Comment on PR
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let status = "UNKNOWN";
+            try {
+              const report = fs.readFileSync('runs/latest_report.html', 'utf8');
+              const match = report.match(/class="status"[^>]*>([A-Z]+)</);
+              if (match) status = match[1];
+            } catch (e) {}
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `**LLM Eval Result:** ${status}\n\nFull HTML diff report is attached as a workflow artifact on this run.`
+            });
